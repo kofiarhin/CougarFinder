@@ -17,14 +17,13 @@ CougarFinder is a MERN starter tailored for matchmaking experiences. The project
    ```bash
    npm install
    npm --prefix client install
-   npm --prefix server install
    ```
 2. Copy the example environment files and adjust values as needed:
    ```bash
    cp server/.env.example server/.env
    cp client/.env.example client/.env
    ```
-3. For local development without MongoDB running, set `USE_IN_MEMORY_DB=true` inside `server/.env`. When deploying, remove that flag and point `MONGO_URI` to your production cluster. Always provide a strong `JWT_SECRET` and explicitly list allowed origins in `CORS_ORIGIN` (comma separated for multiple domains).
+3. For local development without MongoDB running, keep `USE_IN_MEMORY_DB=true` inside `server/.env`. When deploying, remove that flag and point `MONGO_URI` to your production cluster. Always provide a strong `JWT_SECRET` and explicitly list allowed origins in `CORS_ORIGIN` (comma separated for multiple domains).
 
 ## Available scripts
 All scripts are exposed from the repository root and adhere to the conventions described in the project brief.
@@ -34,8 +33,10 @@ All scripts are exposed from the repository root and adhere to the conventions d
 | `npm run dev` | Starts Express (port 5000) and Vite (port 5173) concurrently. |
 | `npm run server` | Runs the API with nodemon in development mode. |
 | `npm run client` | Starts the Vite dev server only. |
-| `npm start` | Boots the Express API for production (`NODE_ENV=production`). Requires a valid `MONGO_URI`. |
-| `npm run build` | Builds the React client (`client/dist`). |
+| `npm start` | Boots the Express API for production. Requires a valid `MONGO_URI`. |
+| `npm run build` | Builds the React client and prepares server assets (ensures upload directories exist). |
+| `npm run build:client` | Builds the client (`client/dist`). |
+| `npm run build:server` | Prepares server uploads/asset directories for production deployment. |
 | `npm test` | Executes the Jest test suite under `server/tests`. |
 | `npm run test:client` | Executes Vitest in the client workspace. |
 
@@ -45,6 +46,7 @@ All scripts are exposed from the repository root and adhere to the conventions d
 
 ### Server specific
 - `npm run server` (from the root) – reloads on changes with nodemon.
+- `npm run build:server` – prepares upload directories so the API can serve static assets immediately after deploy.
 
 ## API health endpoint
 The API exposes a health check at `GET /api/health` that returns:
@@ -59,10 +61,11 @@ Use this route for uptime probes and deployment smoke tests.
 
 ## Deployment
 - **Server (Render/Heroku):** The repository includes a `Procfile` (`web: npm start`). Configure environment variables (`PORT`, `MONGO_URI`, `JWT_SECRET`, `CORS_ORIGIN`, `UPLOAD_DIR`) in your platform dashboard. Render can run the root project with build command `npm install && npm --prefix client install && npm --prefix server install && npm run build` and start command `npm start`.
-- **Client (Vercel/Netlify):** Deploy `client/` as a static site. Build command `npm install && npm run build` executed from `client/`. Set `VITE_API_BASE_URL` to the deployed API URL.
+- **Client (Vercel/Netlify):** Deploy `client/` as a static site. Build command `npm install && npm run build` executed from `client/`. Set `VITE_API_BASE` to the deployed API URL.
 - Ensure `CORS_ORIGIN` contains the production client domain(s) before promoting the API.
 
 ## Additional notes
-- The Express server enforces strict JSON parsing limits, centralised error handling, a `/api/health` heartbeat, and in-memory rate limiting on authentication routes.
+- The Express server enforces strict JSON/urlencoded parsing limits, centralised error handling, a `/api/health` heartbeat, and in-memory rate limiting on authentication routes.
+- Environment variables are applied consistently across platforms via the `scripts/run-with-env.js` helper so commands stay cross-platform without additional dependencies.
 - Socket.IO inherits the same CORS configuration as HTTP routes to respect environment restrictions.
 - Static uploads live under `/uploads`; change `UPLOAD_DIR` via environment variables when using object storage providers.
