@@ -49,7 +49,6 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await disconnectDb();
   if (global.__SERVER__) {
     await new Promise((resolve) => global.__SERVER__.close(resolve));
   }
@@ -58,6 +57,14 @@ afterAll(async () => {
   }
   if (mongoServer) {
     await mongoServer.stop();
+  }
+  try {
+    await disconnectDb();
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to disconnect database during test teardown:', error.message);
+    }
   }
   if (fs.existsSync(process.env.UPLOAD_DIR)) {
     fs.rmSync(process.env.UPLOAD_DIR, { recursive: true, force: true });
