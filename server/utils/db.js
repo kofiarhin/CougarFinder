@@ -16,8 +16,17 @@ const connectDb = async (mongoUri) => {
 };
 
 const disconnectDb = async () => {
-  if (mongoose.connection.readyState !== 0) {
+  if (mongoose.connection.readyState === 0) {
+    return;
+  }
+
+  try {
     await mongoose.disconnect();
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to gracefully disconnect MongoDB:', error.message);
+    }
   }
 };
 

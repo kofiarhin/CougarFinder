@@ -3,21 +3,28 @@ const { verifySocketToken } = require('./utils/token');
 const { Message } = require('./models/Message');
 const { User } = require('./models/User');
 const { buildConvoId } = require('./utils/conversation');
+const { buildSocketCorsOptions } = require('./utils/cors');
 
 const activeUsers = new Map();
 
 const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
-    cors: { origin: '*', credentials: true }
+    cors: buildSocketCorsOptions()
   });
 
   io.use((socket, next) => {
     const headerToken = socket.handshake.headers?.authorization || '';
-    const token = socket.handshake.auth?.token || (headerToken.startsWith('Bearer ') ? headerToken.replace('Bearer ', '') : null);
+    const bearerToken = headerToken.startsWith('Bearer ')
+      ? headerToken.replace('Bearer ', '')
+      : null;
+    const token = socket.handshake.auth?.token || bearerToken;
     const payload = verifySocketToken(token);
+
     if (!payload) {
-      return next(new Error('Unauthorized'));
+      next(new Error('Unauthorized'));
+      return;
     }
+
     socket.user = payload;
     next();
   });
