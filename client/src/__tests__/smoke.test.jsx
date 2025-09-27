@@ -4,18 +4,24 @@ import { renderToString } from 'react-dom/server';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App.jsx';
 
-describe('App smoke test', () => {
-  it('renders without throwing and produces markup', () => {
-    const queryClient = new QueryClient();
+const renderAppToString = () => {
+  const queryClient = new QueryClient();
+  const html = renderToString(
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  );
+  queryClient.clear();
+  return html;
+};
 
-    const html = renderToString(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    );
+describe('App smoke test', () => {
+  it('renders the hero markup and health indicator copy', () => {
+    const html = renderAppToString();
 
     expect(html.length).toBeGreaterThan(0);
+    expect(html).toContain('Find your perfect match');
     expect(html).toContain('Get Started');
-    queryClient.clear();
+    expect(html).toContain('API status');
   });
 });

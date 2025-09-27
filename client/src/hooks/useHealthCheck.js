@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import baseURL from '../constants/baseURL.js';
+import { BASE_URL } from '../constants/baseURL.js';
 
 const fetchHealth = async () => {
-  const response = await fetch(`${baseURL}/api/health`, {
+  const response = await fetch(`${BASE_URL}/api/health`, {
     credentials: 'include'
   });
 
