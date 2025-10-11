@@ -1,10 +1,10 @@
 const dayjs = require('dayjs');
 const { User } = require('../models/User');
 
-const buildAgeFilter = (minAge, maxAge) => {
-  const now = dayjs();
-  const maxDob = now.subtract(minAge || 18, 'year').endOf('day').toDate();
-  const minDob = now.subtract(maxAge || 99, 'year').startOf('day').toDate();
+const buildAgeFilter = (minAge, maxAge, now = dayjs()) => {
+  const reference = dayjs(now);
+  const maxDob = reference.subtract(minAge || 18, 'year').endOf('day').toDate();
+  const minDob = reference.subtract(maxAge || 99, 'year').startOf('day').toDate();
   return { $gte: minDob, $lte: maxDob };
 };
 
@@ -39,5 +39,6 @@ const browseMatches = async (req, res, next) => {
 };
 
 module.exports = {
-  browseMatches
+  browseMatches,
+  buildAgeFilter
 };

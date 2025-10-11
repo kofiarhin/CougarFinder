@@ -61,7 +61,7 @@ const deleteImage = async (req, res, next) => {
     }
     const absolutePath = path.join(uploadsRoot, req.user._id.toString(), image.filename);
     deleteFile(absolutePath);
-    image.remove();
+    image.deleteOne();
     user.counters.photoCount = user.images.length;
     if (!user.images.some((img) => img.isPrimary)) {
       user.hasPrimary = false;
