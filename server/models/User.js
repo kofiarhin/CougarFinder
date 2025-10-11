@@ -58,11 +58,19 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-UserSchema.index({ location: '2dsphere' });
+const applyUserIndexes = () => {
+  const hasGeoIndex = UserSchema.indexes().some(([fields]) => fields.location === '2dsphere');
+  if (!hasGeoIndex) {
+    UserSchema.index({ location: '2dsphere' });
+  }
+};
+
+applyUserIndexes();
 
 const User = mongoose.model('User', UserSchema);
 
 module.exports = {
   User,
-  ImageSchema
+  ImageSchema,
+  applyUserIndexes
 };
