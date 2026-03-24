@@ -89,6 +89,11 @@ CougarFinder is a MERN starter for location-aware matchmaking with an Express AP
 - `GET /api/messages` – Retrieve the latest message per conversation for the current user.
 - `GET /api/messages/thread?withUserId=` – Fetch chronological messages with a specific user (supports `limit`).
 
+### Reports
+- `POST /api/reports` – Submit a report against a user (`{ targetUserId, reason, details?, photoId? }`).
+- `GET /api/reports` – List reports; supports optional `?status=open|reviewing|resolved` filter.
+- `PATCH /api/reports/:id/status` – Update a report's status (`{ status: "open"|"reviewing"|"resolved" }`).
+
 ### WebSocket Events (`/socket.io`)
 - **Handshake** – Requires a valid JWT via `Authorization: Bearer <token>` header or `auth.token` payload.
 - `message:send` – Persist and broadcast a new message (`{ toUserId, body }`).
@@ -143,5 +148,5 @@ CougarFinder is a MERN starter for location-aware matchmaking with an Express AP
 
 ## Roadmap
 - Expand the client beyond the landing page with authenticated flows for browsing, messaging, and profile management.
-- Expose moderation/report management endpoints built around `Report` models.
+- ~~Expose moderation/report management endpoints built around `Report` models.~~ ✓ Done
 - Add automated deployment workflows (GitHub Actions) to run tests and trigger platform deploys.

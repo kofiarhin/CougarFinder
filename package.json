@@ -14,6 +14,12 @@
     "test:server": "node scripts/run-with-env.js NODE_ENV=test jest --config server/jest.config.js",
     "test:client": "npm --prefix client run test"
   },
+  "config": {
+    "mongodbMemoryServer": {
+      "downloadMirror": "https://s3.amazonaws.com/downloads.mongodb.org",
+      "systemBinary": "/root/.cache/mongodb-binaries/mongod"
+    }
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",

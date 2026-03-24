@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 const { errorHandler } = require('./middleware/errorHandler');
 const { notFoundHandler } = require('./middleware/notFound');
 const { buildCorsOptions } = require('./utils/cors');
@@ -31,6 +32,7 @@ const createApp = () => {
   app.use('/api/users', userRoutes);
   app.use('/api/matches', matchRoutes);
   app.use('/api/messages', messageRoutes);
+  app.use('/api/reports', reportRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
